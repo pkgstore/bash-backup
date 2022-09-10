@@ -21,7 +21,7 @@ jobs:
     name: "Mirror / GitHub"
     env:
       dst_domain: "${{ github.server_url }}"
-      dst_owner: "${{ github.repository_owner }}-mirror"
+      dst_owner: "${{ github.repository_owner }}${{ env.dst_sfx }}"
     steps:
       - run: |
           echo "repo_name=$( echo '${{ env.src_repo }}' | awk -F '/' '{ print $2 }' )" >> $GITHUB_ENV
