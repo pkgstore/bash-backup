@@ -7,8 +7,6 @@ env:
   src_domain: "${{ github.server_url }}"
   src_owner: "${{ github.repository_owner }}"
   src_repo: "${{ github.repository }}"
-  dst_sfx: "-mirror"
-  dst_pfx: ""
 
 jobs:
 
@@ -21,7 +19,7 @@ jobs:
     name: "Mirror / GitHub"
     env:
       dst_domain: "${{ github.server_url }}"
-      dst_owner: "${{ github.repository_owner }}${{ env.dst_sfx }}"
+      dst_owner: "${{ github.repository_owner }}-mirror"
     steps:
       - run: |
           echo "repo_name=$( echo '${{ env.src_repo }}' | awk -F '/' '{ print $2 }' )" >> $GITHUB_ENV
