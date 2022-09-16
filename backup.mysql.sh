@@ -65,7 +65,7 @@ init() {
 
 backup() {
   for db in "${dbs[@]}"; do
-    name="${db}.${ts_date}.sql"
+    local name="${db}.${ts_date}.sql"
 
     echo "" && echo "--- OPEN: '${db}'"
     ${mysqldump} -u "${user}" -p"${password}" --single-transaction "${db}" > "${name}" \

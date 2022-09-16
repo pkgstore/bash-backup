@@ -55,7 +55,7 @@ init() {
 
 backup() {
   for dir in "${dirs[@]}"; do
-    name="${dir}.${ts_date}"
+    local name="${dir}.${ts_date}"
 
     echo "" && echo "--- OPEN: '${dir}'"
     ${tar} -cJf "${name}.tar.xz" "${dir}"
