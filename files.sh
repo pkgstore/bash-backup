@@ -6,17 +6,13 @@
 # CONFIGURATION.
 # -------------------------------------------------------------------------------------------------------------------- #
 
-mysqldump="$( command -v mysqldump )"
 tar="$( command -v tar )"
 date="$( command -v date )"
-rm="$( command -v rm )"
 
 # Help.
 read -r -d '' help <<- EOF
 Options:
-  -u 'USER'                               MySQL user name.
-  -p 'PASSWORD'                           MySQL user password.
-  -d 'DB_1;DB_2;DB_3'                     MySQL databases.
+  -d 'DIR_1;DIR_2;DIR_3'                Directories.
 EOF
 
 # -------------------------------------------------------------------------------------------------------------------- #
@@ -25,16 +21,10 @@ EOF
 
 OPTIND=1
 
-while getopts "u:p:d:h" opt; do
+while getopts "d:h" opt; do
   case ${opt} in
-    u)
-      user="${OPTARG}"
-      ;;
-    p)
-      password="${OPTARG}"
-      ;;
     d)
-      dbs="${OPTARG}"; IFS=';' read -ra dbs <<< "${dbs}"
+      dirs="${OPTARG}"; IFS=';' read -ra dirs <<< "${dirs}"
       ;;
     h|*)
       echo "${help}"
@@ -45,7 +35,7 @@ done
 
 shift $(( OPTIND - 1 ))
 
-(( ! ${#dbs[@]} )) && exit 1
+(( ! ${#dirs[@]} )) && exit 1
 
 # -------------------------------------------------------------------------------------------------------------------- #
 # INITIALIZATION.
@@ -60,18 +50,16 @@ init() {
 }
 
 # -------------------------------------------------------------------------------------------------------------------- #
-# BACKUP: DATABASES.
+# BACKUP: FILES.
 # -------------------------------------------------------------------------------------------------------------------- #
 
 backup() {
-  for db in "${dbs[@]}"; do
-    local name="${db}.${ts_date}.sql"
+  for dir in "${dirs[@]}"; do
+    local name="${dir}.${ts_date}"
 
-    echo "" && echo "--- OPEN: '${db}'"
-    ${mysqldump} -u "${user}" -p"${password}" --single-transaction "${db}" > "${name}" \
-      && ${tar} -cJf "${name}.tar.xz" "${name}" \
-      && ${rm} -f "${name}"
-    echo "" && echo "--- DONE: '${db}'" && echo ""
+    echo "" && echo "--- OPEN: '${dir}'"
+    ${tar} -cJf "${name}.tar.xz" "${dir}"
+    echo "" && echo "--- DONE: '${dir}'" && echo ""
   done
 }
 
